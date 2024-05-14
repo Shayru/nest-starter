@@ -7,4 +7,10 @@ export class Article {
 
   @Column({ type: 'varchar' })
   title: string;
+
+  @Column({ type: 'varchar' })
+  content: string;
+
+  @Column({ type: 'varchar' })
+  author: string;
 }

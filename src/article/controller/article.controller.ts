@@ -37,6 +37,15 @@ export class ArticleController {
     return this.articleService.getOneArticleById(id);
   }
 
+  // NestJs créé l'url voulue "/api/articles/author/:author"
+  // On ajoute un author/ à l'url pour éviter d'avoir le cas ou on est pas sur d'attendre un id ou un author
+  // Le :author permet de récuperer dans la fonction un paramètre du type donnée (ici string)
+  // Le paramètre est envoyé à la fonction lorsque le matcher voit que l'url voulue est appelée 
+  @Get('author/:author')
+  getArticlesByAuthor(@Param('author') author: string){
+    return this.articleService.getArticleByAuthor(author)
+  }
+
   @Post()
   // on utilise le décorateur @Body pour récupérer
   // les données du body de la requête

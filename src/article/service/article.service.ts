@@ -32,6 +32,14 @@ export class ArticleService {
     return await this.articleRepository.findOneBy({ id });
   }
 
+  //On lance une fonction en asynchrone pour que ça ne bloque pas l'appli.
+  //Le framework ouvre un nouveau process qu'il connecte à l'appli pour renvoyer le résultat de la fonction effectuée dans le process lors du return
+  // Le findby fait une demande au répository de trouver toutes les données ayant dans leur table author, l'author donnée.
+  // Pour faire cette recherche, le repository la convertie en SQL
+  async getArticleByAuthor(author: string) {
+    return await this.articleRepository.findBy({"author" : author});
+  }
+
   async updateArticle(id: number, data: ArticleUpdateDto) {
     // on récupère l'article ciblé
     const article = await this.articleRepository.findOneBy({ id });
