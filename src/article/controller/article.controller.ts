@@ -8,9 +8,14 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ArticleService } from '../service/article.service';
+import { GetAllArticlesService } from '../use-case/get-all-articles.service';
+import { GetArticleByIdService } from '../use-case/get-article-by-id.service';
+import { CreateArticleService } from '../use-case/create-article.service';
+import { UpdateArticleService } from '../use-case/update-article.service';
+import { DeleteArticleService } from '../use-case/delete-article.service';
 import { ArticleCreateDto } from '../dto/article-create.dto';
 import { ArticleUpdateDto } from '../dto/article-update.dto';
+import { GetArticlesByAuthorService } from '../use-case/get-articles-by-author.service';
 
 // @Controller('articles')
 // est un décorateur qui permet de déclarer un controller
@@ -20,13 +25,21 @@ export class ArticleController {
   // injection de dépendance
   // permet d'instancier la classe ArticleService
   // dans la propriété articleService
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(
+    private readonly GetAllArticlesService: GetAllArticlesService,
+    private readonly GetArticleByIdService: GetArticleByIdService,
+    private readonly CreateArticleService: CreateArticleService,
+    private readonly UpdateArticleService: UpdateArticleService,
+    private readonly DeleteArticleService: DeleteArticleService,
+    private readonly GetArticlesByAuthorService: GetArticlesByAuthorService,
+
+) {}
 
   // @Get() est un décorateur qui permet de déclarer
   // une route accessible avec la méthode GET
   @Get()
   getAllArticles() {
-    return this.articleService.getAllarticles();
+    return this.GetAllArticlesService.getAllArticles();
   }
 
   // on peut passer en parametre du décorateur
@@ -34,7 +47,7 @@ export class ArticleController {
   // on peut ensuite récupérer sa valeur avec le décorateur @Param
   @Get(':id')
   getOneArticleById(@Param('id', ParseIntPipe) id: number) {
-    return this.articleService.getOneArticleById(id);
+    return this.GetArticleByIdService.getOneArticleById(id);
   }
 
   // NestJs créé l'url voulue "/api/articles/author/:author"
@@ -42,8 +55,9 @@ export class ArticleController {
   // Le :author permet de récuperer dans la fonction un paramètre du type donnée (ici string)
   // Le paramètre est envoyé à la fonction lorsque le matcher voit que l'url voulue est appelée 
   @Get('author/:author')
-  getArticlesByAuthor(@Param('author') author: string){
-    return this.articleService.getArticleByAuthor(author)
+  getArticlesByAuthor(@Param('author') author: string) {
+    //on appelle la méthode du service
+    return this.GetArticlesByAuthorService.getArticlesByAuthor(author);
   }
 
   @Post()
@@ -52,7 +66,7 @@ export class ArticleController {
   // on valide les données du body de la requête
   // avec un DTO (Data Transfer Object)
   createArticle(@Body() data: ArticleCreateDto) {
-    return this.articleService.createArticle(data);
+    return this.CreateArticleService.createArticle(data);
   }
 
   @Put(':id')
@@ -60,11 +74,11 @@ export class ArticleController {
     @Param('id', ParseIntPipe) id: number,
     @Body() data: ArticleUpdateDto,
   ) {
-    return this.articleService.updateArticle(id, data);
+    return this.UpdateArticleService.updateArticle(id, data);
   }
 
   @Delete(':id')
   deleteArticle(@Param('id', ParseIntPipe) id: number) {
-    return this.articleService.deleteArticle(id);
+    return this.DeleteArticleService.deleteArticle(id);
   }
 }
