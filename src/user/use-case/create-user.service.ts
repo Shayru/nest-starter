@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { UserCreateDTO } from '../dto/user-create.dto';
-import { PasswordHasherService } from '../utils/password-hasher.service';
 import { User } from '../entity/user.entity';
 import { Repository } from 'typeorm';
+import { PasswordHasherServiceInterface } from '../utils/password-hasher.service.interface';
+import { PasswordHasherService } from '../utils/password-hasher.service';
 
 @Injectable()
 export class CreateUserService{
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly passwordHasherService: PasswordHasherService,
+    //private readonly userRepository: Repository<User>,
+    private readonly passwordHasherService: PasswordHasherServiceInterface,
   ) {
   }
 
@@ -23,7 +23,7 @@ export class CreateUserService{
 
     try{
       console.log(userToPersist)
-      return this.userRepository.save(userToPersist);
+     // return this.userRepository.save(userToPersist);
     } catch (error) {
       console.log(error);
       throw new Error('Error while creating user');
