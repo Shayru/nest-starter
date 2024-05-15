@@ -58,15 +58,18 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UserUpdateDTO,
   ) {
+    console.log(data)
     return this.updateUserService.update(id, data);
   }
 
   @Put(':id/pass')
   updateUserPassword(
     @Param('id', ParseIntPipe) id: number,
-    @Query('password') password: string
+    @Body('password') password: string
   ) {
-    console.log(password)
+    if(password == undefined || password == "") {
+      throw Error;
+    }
     return this.updateUserPasswordService.update(id, password);
   }
 
