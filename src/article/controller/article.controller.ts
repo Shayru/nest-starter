@@ -26,12 +26,12 @@ export class ArticleController {
   // permet d'instancier la classe ArticleService
   // dans la propriété articleService
   constructor(
-    private readonly GetAllArticlesService: GetAllArticlesService,
-    private readonly GetArticleByIdService: GetArticleByIdService,
-    private readonly CreateArticleService: CreateArticleService,
-    private readonly UpdateArticleService: UpdateArticleService,
-    private readonly DeleteArticleService: DeleteArticleService,
-    private readonly GetArticlesByAuthorService: GetArticlesByAuthorService,
+    private readonly getAllArticlesService: GetAllArticlesService,
+    private readonly getArticleByIdService: GetArticleByIdService,
+    private readonly createArticleService: CreateArticleService,
+    private readonly updateArticleService: UpdateArticleService,
+    private readonly deleteArticleService: DeleteArticleService,
+    private readonly getArticlesByAuthorService: GetArticlesByAuthorService,
 
 ) {}
 
@@ -39,7 +39,7 @@ export class ArticleController {
   // une route accessible avec la méthode GET
   @Get()
   getAllArticles() {
-    return this.GetAllArticlesService.getAllArticles();
+    return this.getAllArticlesService.getAllArticles();
   }
 
   // on peut passer en parametre du décorateur
@@ -47,7 +47,7 @@ export class ArticleController {
   // on peut ensuite récupérer sa valeur avec le décorateur @Param
   @Get(':id')
   getOneArticleById(@Param('id', ParseIntPipe) id: number) {
-    return this.GetArticleByIdService.getOneArticleById(id);
+    return this.getArticleByIdService.getOneArticleById(id);
   }
 
   // NestJs créé l'url voulue "/api/articles/author/:author"
@@ -57,7 +57,7 @@ export class ArticleController {
   @Get('author/:author')
   getArticlesByAuthor(@Param('author') author: string) {
     //on appelle la méthode du service
-    return this.GetArticlesByAuthorService.getArticlesByAuthor(author);
+    return this.getArticlesByAuthorService.getArticlesByAuthor(author);
   }
 
   @Post()
@@ -66,7 +66,7 @@ export class ArticleController {
   // on valide les données du body de la requête
   // avec un DTO (Data Transfer Object)
   createArticle(@Body() data: ArticleCreateDto) {
-    return this.CreateArticleService.createArticle(data);
+    return this.createArticleService.createArticle(data);
   }
 
   @Put(':id')
@@ -74,11 +74,11 @@ export class ArticleController {
     @Param('id', ParseIntPipe) id: number,
     @Body() data: ArticleUpdateDto,
   ) {
-    return this.UpdateArticleService.updateArticle(id, data);
+    return this.updateArticleService.updateArticle(id, data);
   }
 
   @Delete(':id')
   deleteArticle(@Param('id', ParseIntPipe) id: number) {
-    return this.DeleteArticleService.deleteArticle(id);
+    return this.deleteArticleService.deleteArticle(id);
   }
 }
