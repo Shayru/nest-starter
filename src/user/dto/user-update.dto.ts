@@ -1,7 +1,6 @@
-export class UserCreateDTO {
+export class UserUpdateDTO {
   firstname: string;
   lastname: string;
-  password: string;
   birthcity: string;
   age: number;
 }
