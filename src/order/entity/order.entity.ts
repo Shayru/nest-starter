@@ -1,8 +1,18 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderCreateDTO } from '../dto/order-create.dto';
+import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
+import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
+
+enum OrderType {
+    Created = "created",
+    Paid = "paid",
+  }
+   
 
 @Entity()
 export class Order {
+
+
     constructor(orderCreateData?: OrderCreateDTO){
         if(orderCreateData){
             if(orderCreateData.items.length > 3) {
@@ -14,7 +24,7 @@ export class Order {
             this.updatedAt = new Date(),
             this.customer = 'test',
             this.paidAt = null,
-            this.status = 'Cart',
+            this.status = OrderType.Created,
             this.total = 10 * orderCreateData.items.length
         }
     }
@@ -43,10 +53,43 @@ export class Order {
   @Column({ type: 'int' })
   total: number;
 
+  @Column({nullable: true})
+  shippingAddress: string;
+
+  @Column({nullable: true})
+  shippingMethod: string;
+
+  @Column({nullable: true})
+  invoiceAddress: string;
+
+  @Column({nullable: true})
+  shippingMethodSetAt: Date;
+
+  @Column({nullable: true})
+  invoiceAddressSetAt: Date;
+
+
   pay(){
     this.updatedAt = new Date()
     this.paidAt = new Date()
-    this.status = "paid"
+    this.status = OrderType.Paid
+  }
+
+  setShippingAdress(data: ModifyLivraisonDTO){
+    if(this.invoiceAddress == null){
+        this.invoiceAddress = data.shippingAddress
+        this.invoiceAddressSetAt = new Date()
+    }
+    this.shippingAddress = data.shippingAddress
+    this.shippingMethod = data.shippingMethod
+    this.shippingMethodSetAt = new Date()
+    this.updatedAt = new Date()
+  }
+
+  setInvoiceAdress(data: ModifyInvoiceDTO){
+    this.invoiceAddress = data.invoiceAddress
+    this.invoiceAddressSetAt = new Date()
+    this.updatedAt = new Date()
   }
 
 }

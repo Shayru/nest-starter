@@ -5,6 +5,8 @@ import { OrderController } from './controller/order.controller';
 import { CreateOrderService } from './use-case/create-order.service';
 import { GetAllOrdersService } from './use-case/get-all-orders.service';
 import { PayOrderService } from './use-case/pay-order-service';
+import { ModifyInvoiceOrderService } from './use-case/modify-invoice-order.service';
+import { ModifyShippingOrderService } from './use-case/modify-shipping-order.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order])],
@@ -12,7 +14,9 @@ import { PayOrderService } from './use-case/pay-order-service';
   providers: [
     CreateOrderService,
     GetAllOrdersService,
-    PayOrderService
+    PayOrderService,
+    ModifyShippingOrderService,
+    ModifyInvoiceOrderService
     // {
     //     provide: CreateUserService,
     //     useFactory: (PasswordHasherService: PasswordHasherServiceInterface) => {
