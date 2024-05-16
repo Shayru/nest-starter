@@ -43,4 +43,10 @@ export class Order {
   @Column({ type: 'int' })
   total: number;
 
+  pay(){
+    this.updatedAt = new Date()
+    this.paidAt = new Date()
+    this.status = "paid"
+  }
+
 }
