@@ -14,7 +14,6 @@ export class CreateArticleService {
     try {
       return this.articleRepository.save(data);
     } catch (error) {
-      console.log(error);
       throw new Error('Error while creating article');
     }
   }

@@ -8,9 +8,9 @@ export class Article {
   @Column({ type: 'varchar' })
   title: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   content: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar' , nullable: true})
   author: string;
 }

@@ -23,7 +23,6 @@ export class UpdateUserPasswordService {
       
      return user
     } catch (error) {
-      console.log(error);
       throw new Error('Error while updating user');
     }
   }
