@@ -10,7 +10,11 @@ export class CreateOrderService{
     ){}
 
     async create(createOrderData: OrderCreateDTO): Promise<Order> {
-        const order = new Order(createOrderData);
+        const order = new Order();
+        // this.orderRepository.save(order);
+        order.addOrderItems(createOrderData)
+        console.log(order);
+
 
         return this.orderRepository.save(order);
     }

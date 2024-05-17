@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     ParseIntPipe,
@@ -15,15 +16,19 @@ import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
 import { ModifyShippingOrderService } from '../use-case/modify-shipping-order.service';
 import { ModifyInvoiceOrderService } from '../use-case/modify-invoice-order.service';
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
+import { GetAllOrdersItemsService } from '../use-case/get-all-orders-items.service';
+import { DeleteOrderService } from '../use-case/delete-order.service';
   
   @Controller('orders')
   export class OrderController {
     constructor(
       private readonly createOrderService: CreateOrderService,
       private readonly getAllOrdersService: GetAllOrdersService,
+      private readonly getAllOrdersItemsService: GetAllOrdersItemsService,
       private readonly payOrderService: PayOrderService,
       private readonly modifyShippingOrderService: ModifyShippingOrderService,
       private readonly modifyInvoiceOrderService: ModifyInvoiceOrderService,
+      private readonly deleteOrderService: DeleteOrderService
   
   ) {}
   
@@ -58,6 +63,19 @@ import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
     @Get()
     getAllOrders() {
       return this.getAllOrdersService.getAll();
+    }
+
+    @Delete(':id')
+    deleteOrder(
+      @Param('id', ParseIntPipe) id: number
+    ) {
+      return this.deleteOrderService.delete(id);
+    }
+    
+
+    @Get('/items')
+    getAllOrdersItems() {
+      return this.getAllOrdersItemsService.getAll();
     }
   
   }

@@ -1,32 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderCreateDTO } from '../dto/order-create.dto';
 import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
+import { OrderItem } from './order-item.entity';
 
-enum OrderType {
-    Created = "created",
-    Paid = "paid",
-  }
-   
 
 @Entity()
 export class Order {
 
-
-    constructor(orderCreateData?: OrderCreateDTO){
-        if(orderCreateData){
-            if(orderCreateData.items.length > 3) {
-                throw new Error("trop dd'items");
-            }
-    
-            this.items = orderCreateData.items,
-            this.createdAt = new Date(),
-            this.updatedAt = new Date(),
-            this.customer = 'test',
-            this.paidAt = null,
-            this.status = OrderType.Created,
-            this.total = 10 * orderCreateData.items.length
-        }
+    static OrderType =  {
+        Created: "created",
+        Paid: "paid",
+      }
+      
+    constructor(){
+      this.createdAt = new Date(),
+      this.updatedAt = new Date(),
+      this.customer = 'test',
+      this.paidAt = null,
+      this.status = Order.OrderType.Created
+      this.total = 0
     }
 
   @PrimaryGeneratedColumn()
@@ -44,8 +37,10 @@ export class Order {
   @Column({nullable: true})
   paidAt: Date;
 
-  @Column({ type: 'json'})
-  items: string[];
+  @OneToMany(() => OrderItem, (order) => order.id, {nullable: true,  cascade: true})
+  items: OrderItem[];
+  // @Column({ type: 'json' })
+  // items: string[];
 
   @Column({ type: 'varchar' })
   status: string;
@@ -72,10 +67,13 @@ export class Order {
   pay(){
     this.updatedAt = new Date()
     this.paidAt = new Date()
-    this.status = OrderType.Paid
+    this.status = Order.OrderType.Paid
   }
 
   setShippingAdress(data: ModifyLivraisonDTO){
+    if(this.status != Order.OrderType.Created && this.status != Order.OrderType.Paid){
+        throw new Error("Le commande n'est pas au bon status")
+    }
     if(this.invoiceAddress == null){
         this.invoiceAddress = data.shippingAddress
         this.invoiceAddressSetAt = new Date()
@@ -87,9 +85,39 @@ export class Order {
   }
 
   setInvoiceAdress(data: ModifyInvoiceDTO){
+    if(this.status != Order.OrderType.Created && this.status != Order.OrderType.Paid){
+        throw new Error("Le commande n'est pas au bon status")
+    }
     this.invoiceAddress = data.invoiceAddress
     this.invoiceAddressSetAt = new Date()
     this.updatedAt = new Date()
+  }
+
+  addOrderItems(data: OrderCreateDTO){
+    if(data){ 
+      this.items = []
+      if(data.items.length > 3) {
+          throw new Error("trop d'items");
+      }
+
+      for (var item of data.items) {
+        const itemSave = new OrderItem(item);
+
+        let exist = false;
+        for(var orderItem of this.items){
+          if(orderItem.product == itemSave.product){
+              orderItem.quantity ++
+              this.total += orderItem.price
+              exist = true;
+          }
+        }
+        if(!exist){
+            this.items.push(itemSave)
+            this.total += itemSave.price
+            this.updatedAt = new Date()
+        }
+      }
+    }
   }
 
 }
