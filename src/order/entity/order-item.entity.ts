@@ -25,4 +25,9 @@ export class OrderItem {
 
     @ManyToOne(() => Order, (order) => order.items)
     order: Order
+
+
+    incrementQuantity(){
+        this.quantity ++
+    }
 }

@@ -13,13 +13,16 @@ export class Order {
         Paid: "paid",
       }
       
-    constructor(){
+    constructor(data: OrderCreateDTO){
+      if(data){
+        this.createOrderItems(data);
+        this.total = data.items.length * 10
+      }
       this.createdAt = new Date(),
       this.updatedAt = new Date(),
       this.customer = 'test',
       this.paidAt = null,
       this.status = Order.OrderType.Created
-      this.total = 0
     }
 
   @PrimaryGeneratedColumn()
@@ -119,5 +122,27 @@ export class Order {
       }
     }
   }
+
+
+  private createOrderItems(data: OrderCreateDTO) {
+    this.items = []
+
+    data.items.map(item => {
+        const existingOrderItem = this.getOrderItemWithProduct(item);
+        if (existingOrderItem) {
+            existingOrderItem.incrementQuantity()
+        } else {
+            const newOrderItem = (new OrderItem(item));
+            this.items.push(newOrderItem)
+        }
+    });
+}
+
+private getOrderItemWithProduct(product: string): OrderItem {
+    return this.items.find((item) => {
+        console.log(item.product)
+        return item.product === product;
+    });
+}
 
 }

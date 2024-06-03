@@ -10,4 +10,8 @@ export class PasswordHasherService implements PasswordHasherServiceInterface{
 
     return passwordHashed;
   }
+
+  async compare(password1: string, password2){
+    return bcrypt.compare(password1,password2);
+  }
 }

@@ -6,6 +6,8 @@ export class UserCreateDTO {
   @IsString()
   lastname: string;
   @IsString()
+  username: string;
+  @IsString()
   password: string;
   @IsString()
   birthcity: string;
