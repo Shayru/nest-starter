@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
+    UseGuards,
   } from '@nestjs/common';
 import { CreateOrderService } from '../use-case/create-order.service';
 import { OrderCreateDTO } from '../dto/order-create.dto';
@@ -18,6 +19,7 @@ import { ModifyInvoiceOrderService } from '../use-case/modify-invoice-order.serv
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
 import { GetAllOrdersItemsService } from '../use-case/get-all-orders-items.service';
 import { DeleteOrderService } from '../use-case/delete-order.service';
+import { AuthGuard } from 'src/auth/auth.guard';
   
   @Controller('orders')
   export class OrderController {
@@ -32,11 +34,13 @@ import { DeleteOrderService } from '../use-case/delete-order.service';
   
   ) {}
   
+    @UseGuards(AuthGuard)
     @Post()
     createOrder(@Body() data: OrderCreateDTO) {
       return this.createOrderService.create(data);
     }
 
+    @UseGuards(AuthGuard)
     @Put(':id/pay')
     payOrder(
       @Param('id', ParseIntPipe) id: number
@@ -44,6 +48,7 @@ import { DeleteOrderService } from '../use-case/delete-order.service';
       return this.payOrderService.pay(id);
     }
 
+    @UseGuards(AuthGuard)
     @Put(':id/shipping')
     modifyShipping(
       @Param('id', ParseIntPipe) id: number,
@@ -52,6 +57,7 @@ import { DeleteOrderService } from '../use-case/delete-order.service';
       return this.modifyShippingOrderService.modify(id, data);
     }
 
+    @UseGuards(AuthGuard)
     @Put(':id/invoice')
     modifyLivraison(
       @Param('id', ParseIntPipe) id: number,
@@ -60,11 +66,13 @@ import { DeleteOrderService } from '../use-case/delete-order.service';
       return this.modifyInvoiceOrderService.modify(id, data);
     }
 
+    @UseGuards(AuthGuard)
     @Get()
     getAllOrders() {
       return this.getAllOrdersService.getAll();
     }
 
+    @UseGuards(AuthGuard)
     @Delete(':id')
     deleteOrder(
       @Param('id', ParseIntPipe) id: number
@@ -72,7 +80,7 @@ import { DeleteOrderService } from '../use-case/delete-order.service';
       return this.deleteOrderService.delete(id);
     }
     
-
+    @UseGuards(AuthGuard)
     @Get('/items')
     getAllOrdersItems() {
       return this.getAllOrdersItemsService.getAll();
