@@ -1,8 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderCreateDTO } from '../dto/order-create.dto';
 import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
-import { OrderItem } from './order-item.entity';
+import { User } from 'src/user/entity/user.entity';
+import { OrderProduct } from './order-product.entity';
+import { OrderProductCreateDTO } from '../dto/order-product-create.dto';
+import { Product } from 'src/product/entity/product.entity';
 
 
 @Entity()
@@ -13,16 +16,15 @@ export class Order {
         Paid: "paid",
       }
       
-    constructor(data: OrderCreateDTO){
-      if(data){
-        this.createOrderItems(data);
-        this.total = data.items.length * 10
+    constructor(user: User){
+      if(user){
+        this.customer = user;
       }
       this.createdAt = new Date(),
       this.updatedAt = new Date(),
-      this.customer = 'test',
       this.paidAt = null,
       this.status = Order.OrderType.Created
+      this.total = 0;
     }
 
   @PrimaryGeneratedColumn()
@@ -34,16 +36,14 @@ export class Order {
   @Column()
   updatedAt: Date;
 
-  @Column()
-  customer: string;
+  @ManyToOne(() => User, (user) => user.id, {cascade: true})
+  customer: User;
   
   @Column({nullable: true})
   paidAt: Date;
 
-  @OneToMany(() => OrderItem, (order) => order.id, {nullable: true,  cascade: true})
-  items: OrderItem[];
-  // @Column({ type: 'json' })
-  // items: string[];
+  @OneToMany(() => OrderProduct, (order) => order.id, {nullable: true,  cascade: true})
+  products: OrderProduct[];
 
   @Column({ type: 'varchar' })
   status: string;
@@ -96,52 +96,69 @@ export class Order {
     this.updatedAt = new Date()
   }
 
-  addOrderItems(data: OrderCreateDTO){
-    if(data){ 
-      this.items = []
-      if(data.items.length > 3) {
-          throw new Error("trop d'items");
-      }
+  // addOrderItems(data: OrderCreateDTO){
+  //   if(data){ 
+  //     this.items = []
+  //     if(data.items.length > 3) {
+  //         throw new Error("trop d'items");
+  //     }
 
-      for (var item of data.items) {
-        const itemSave = new OrderItem(item);
+  //     for (var item of data.items) {
+  //       const itemSave = new OrderItem(item);
 
-        let exist = false;
-        for(var orderItem of this.items){
-          if(orderItem.product == itemSave.product){
-              orderItem.quantity ++
-              this.total += orderItem.price
-              exist = true;
-          }
-        }
-        if(!exist){
-            this.items.push(itemSave)
-            this.total += itemSave.price
-            this.updatedAt = new Date()
-        }
-      }
-    }
-  }
+  //       let exist = false;
+  //       for(var orderItem of this.items){
+  //         if(orderItem.product == itemSave.product){
+  //             orderItem.quantity ++
+  //             this.total += orderItem.price
+  //             exist = true;
+  //         }
+  //       }
+  //       if(!exist){
+  //           this.items.push(itemSave)
+  //           this.total += itemSave.price
+  //           this.updatedAt = new Date()
+  //       }
+  //     }
+  //   }
+  // }
 
 
-  private createOrderItems(data: OrderCreateDTO) {
-    this.items = []
+  createOrderProducts(data: OrderCreateDTO) {
+    this.products = []
 
-    data.items.map(item => {
-        const existingOrderItem = this.getOrderItemWithProduct(item);
-        if (existingOrderItem) {
-            existingOrderItem.incrementQuantity()
+    data.products.map(product => {
+        console.log("Checking : " + product)
+        const existingOrderProduct = this.getOrderProductWithProduct(product);
+        if (existingOrderProduct) {
+          console.log("ProductExist")
+          existingOrderProduct.incrementQuantity()
         } else {
-            const newOrderItem = (new OrderItem(item));
-            this.items.push(newOrderItem)
+          console.log("Product Doesn't Exist")
+            const orderProduct = new OrderProductCreateDTO;
+            orderProduct.order = this;
+            orderProduct.product = product;
+            console.log(orderProduct);
+
+            const newProduct = (new OrderProduct(orderProduct));
+            console.log("created OrderProduct")
+            // console.log(newProduct);
+            this.products.push(newProduct)
         }
     });
 }
 
-private getOrderItemWithProduct(product: string): OrderItem {
-    return this.items.find((item) => {
-        console.log(item.product)
-        return item.product === product;
+private getOrderProductWithProduct(product: Product): OrderProduct {
+    this.products.forEach((p) => {
+      if(p.product === product ){
+          console.log("is Found")
+      } else{
+        console.log("not found")
+      }
+    })
+    return this.products.find((itemProduct) => {
+        // console.log(itemProduct)
+        return itemProduct.product === product;
     });
 }
 

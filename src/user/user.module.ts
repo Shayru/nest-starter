@@ -9,8 +9,9 @@ import { DeleteUserService } from './use-case/delete-user.service';
 import { PasswordHasherServiceInterface } from './utils/password-hasher.service.interface';
 import { UpdateUserPasswordService } from './use-case/update-user-password.service';
 import { UpdateUserService } from './use-case/update-user.service';
-import { GetUserByIdService } from './use-case/get-user-by-id.service copy';
+import { GetUserByIdService } from './use-case/get-user-by-id.service';
 import { getAllUserByBirthCityService } from './use-case/get-all-user-by-birth-city.service';
+import { GetCurrentUserService } from './use-case/get-current-user.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -23,6 +24,7 @@ import { getAllUserByBirthCityService } from './use-case/get-all-user-by-birth-c
     UpdateUserPasswordService,
     UpdateUserService,
     DeleteUserService,
+    GetCurrentUserService,
     PasswordHasherService,
     // {
     //     provide: CreateUserService,

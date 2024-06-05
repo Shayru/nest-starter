@@ -37,6 +37,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
     @UseGuards(AuthGuard)
     @Post()
     createOrder(@Body() data: OrderCreateDTO) {
+      console.log(data);
       return this.createOrderService.create(data);
     }
 
@@ -68,8 +69,13 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
     @UseGuards(AuthGuard)
     @Get()
-    getAllOrders() {
-      return this.getAllOrdersService.getAll();
+    async getAllOrders() {
+      const orders = await this.getAllOrdersService.getAll();
+      orders.forEach(order => {
+        console.log(order);
+        console.log(order.customer);
+      })
+      return orders;
     }
 
     @UseGuards(AuthGuard)

@@ -17,7 +17,7 @@ import { getAllUserByBirthCityService } from '../use-case/get-all-user-by-birth-
 import { UserUpdateDTO } from '../dto/user-update.dto';
 import { UpdateUserService } from '../use-case/update-user.service';
 import { UpdateUserPasswordService } from '../use-case/update-user-password.service';
-import { GetUserByIdService } from '../use-case/get-user-by-id.service copy';
+import { GetUserByIdService } from '../use-case/get-user-by-id.service';
 
 
 @Controller('users')
@@ -73,7 +73,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  deleteArticle(@Param('id', ParseIntPipe) id: number) {
+  deleteUser(@Param('id', ParseIntPipe) id: number) {
     return this.deleteUserService.delete(id);
   }
 }

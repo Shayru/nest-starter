@@ -8,11 +8,15 @@ import { PayOrderService } from './use-case/pay-order-service';
 import { ModifyInvoiceOrderService } from './use-case/modify-invoice-order.service';
 import { ModifyShippingOrderService } from './use-case/modify-shipping-order.service';
 import { GetAllOrdersItemsService } from './use-case/get-all-orders-items.service';
-import { OrderItem } from './entity/order-item.entity';
 import { DeleteOrderService } from './use-case/delete-order.service';
+import { OrderProduct } from './entity/order-product.entity';
+import { UserModule } from 'src/user/user.module';
+import { GetCurrentUserService } from 'src/user/use-case/get-current-user.service';
+import { User } from 'src/user/entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderItem])],
+  imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderProduct]),  TypeOrmModule.forFeature([User]), UserModule],
+  
   controllers: [OrderController],
   providers: [
     CreateOrderService,
@@ -21,7 +25,8 @@ import { DeleteOrderService } from './use-case/delete-order.service';
     PayOrderService,
     ModifyShippingOrderService,
     ModifyInvoiceOrderService,
-    DeleteOrderService
+    DeleteOrderService,
+    GetCurrentUserService
     // {
     //     provide: CreateUserService,
     //     useFactory: (PasswordHasherService: PasswordHasherServiceInterface) => {
