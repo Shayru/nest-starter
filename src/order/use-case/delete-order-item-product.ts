@@ -15,7 +15,6 @@ export class DeleteOrderItemProductService {
   }
 
     async delete(id: number, itemProductId: number): Promise<Order>{
-      console.log(id, itemProductId);
       const orderProduct = await this.orderProductRepository.findOne({
         where: { 
             id: itemProductId,
@@ -41,9 +40,7 @@ export class DeleteOrderItemProductService {
         throw new Error('Product not found')
       }
       
-      console.log('totals')
-      const newTotal = foundOrder.total + parseFloat((orderProduct.product.price * orderProduct.quantity).toFixed(2));
-      foundOrder.total = newTotal;
+      foundOrder.total = foundOrder.total - (orderProduct.product.price * orderProduct.quantity);
       
       foundOrder.products = foundOrder.products.filter(product => product.product.id !== productId);
       await this.orderProductRepository.remove(found);

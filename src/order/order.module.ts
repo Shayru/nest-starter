@@ -7,7 +7,6 @@ import { GetAllOrdersService } from './use-case/get-all-orders.service';
 import { PayOrderService } from './use-case/pay-order-service';
 import { ModifyInvoiceOrderService } from './use-case/modify-invoice-order.service';
 import { ModifyShippingOrderService } from './use-case/modify-shipping-order.service';
-import { GetAllOrdersItemsService } from './use-case/get-all-orders-items.service';
 import { DeleteOrderService } from './use-case/delete-order.service';
 import { OrderProduct } from './entity/order-product.entity';
 import { UserModule } from 'src/user/user.module';
@@ -16,6 +15,8 @@ import { GetCurrentUserOrderService } from './use-case/get-current-user-order.se
 import { DeleteOrderItemProductService } from './use-case/delete-order-item-product';
 import { ModifyOrderItemQuantityService } from './use-case/modify-order-item-quantity';
 import { GetOrderService } from './use-case/get-order.service';
+import { GetAllOrdersItemsService } from './use-case/get-all-orders-items.service copy';
+import { GetAllUserOrdersService } from './use-case/get-all-user-orders.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderProduct]), UserModule, ProductModule],
@@ -32,6 +33,7 @@ import { GetOrderService } from './use-case/get-order.service';
     GetCurrentUserOrderService,
     DeleteOrderItemProductService,
     ModifyOrderItemQuantityService,
+    GetAllUserOrdersService,
     GetOrderService
     // {
     //     provide: CreateUserService,

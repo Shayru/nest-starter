@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ProductCreateDto } from "../dto/product-create.dto";
 import { OrderProduct } from "src/order/entity/order-product.entity";
+import { DecimalColumnTransformer } from "src/utils/decimal-column.transformer";
 
 @Entity()
 export class Product {
@@ -20,7 +21,7 @@ export class Product {
     @Column({ type: 'varchar' })
     title: string;
   
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column('decimal', { precision: 10, scale: 2, transformer: new DecimalColumnTransformer() })
     price: number;
   
     @Column({ type: 'varchar' })

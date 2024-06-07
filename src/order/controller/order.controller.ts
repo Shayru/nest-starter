@@ -17,7 +17,7 @@ import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
 import { ModifyShippingOrderService } from '../use-case/modify-shipping-order.service';
 import { ModifyInvoiceOrderService } from '../use-case/modify-invoice-order.service';
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
-import { GetAllOrdersItemsService } from '../use-case/get-all-orders-items.service';
+import { GetAllUserOrdersService } from '../use-case/get-all-user-orders.service';
 import { DeleteOrderService } from '../use-case/delete-order.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CurrentUser } from 'src/user/decorator/user.decorator';
@@ -26,6 +26,7 @@ import { DeleteOrderItemProductService } from '../use-case/delete-order-item-pro
 import { ModifyOrderItemQuantityService } from '../use-case/modify-order-item-quantity';
 import { ModifyOrderProductQuantityDTO } from '../dto/modify-order-product-quantity.dto';
 import { GetOrderService } from '../use-case/get-order.service';
+import { GetAllOrdersItemsService } from '../use-case/get-all-orders-items.service copy';
   
   @Controller('orders')
   export class OrderController {
@@ -34,6 +35,7 @@ import { GetOrderService } from '../use-case/get-order.service';
       private readonly getAllOrdersService: GetAllOrdersService,
       private readonly getOrderService: GetOrderService,
       private readonly getAllOrdersItemsService: GetAllOrdersItemsService,
+      private readonly getAllUserOrdersService: GetAllUserOrdersService,
       private readonly getCurrentUserOrderService: GetCurrentUserOrderService,
       private readonly payOrderService: PayOrderService,
       private readonly modifyShippingOrderService: ModifyShippingOrderService,
@@ -59,6 +61,17 @@ import { GetOrderService } from '../use-case/get-order.service';
       @CurrentUser() currentUser: any
     ) {
       return this.getCurrentUserOrderService.get(currentUser);
+    }
+
+    
+
+    @UseGuards(AuthGuard)
+    @Get('/user/current')
+    async getAllUserCurentOrders(
+      @CurrentUser() currentUser: any
+    ) {
+      const orders = await this.getAllUserOrdersService.get(currentUser);
+      return orders;
     }
 
     @UseGuards(AuthGuard)
@@ -97,6 +110,30 @@ import { GetOrderService } from '../use-case/get-order.service';
       })
       return orders;
     }
+
+    
+    @UseGuards(AuthGuard)
+    @Get('/user/:id')
+    async getAllUserOrders(
+      @Param('id', ParseIntPipe) userId: number
+    ) {
+      const orders = await this.getAllUserOrdersService.get(userId);
+      console.log('test');
+      console.log(orders);
+      return orders;
+    }
+
+    // // @UseGuards(AuthGuard)
+    // @Get('/user/current')
+    // async getAllCurentUserOrders(
+    //   // @CurrentUser() currentUser: any
+    // ) {
+    //   console.log('test')
+    //   const orders = await this.getAllUserOrdersService.get(2);
+    //   console.log('test');
+    //   console.log(orders);
+    //   return orders;
+    // }
 
     @UseGuards(AuthGuard)
     @Get(':id/')

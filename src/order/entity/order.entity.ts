@@ -6,6 +6,7 @@ import { User } from 'src/user/entity/user.entity';
 import { OrderProduct } from './order-product.entity';
 import { OrderProductCreateDTO } from '../dto/order-product-create.dto';
 import { Product } from 'src/product/entity/product.entity';
+import { DecimalColumnTransformer } from 'src/utils/decimal-column.transformer';
 
 
 @Entity()
@@ -24,7 +25,7 @@ export class Order {
       this.updatedAt = new Date(),
       this.paidAt = null,
       this.status = Order.OrderType.Created
-      this.total = 0;
+      this.total = 0.00;
     }
 
   @PrimaryGeneratedColumn()
@@ -48,7 +49,7 @@ export class Order {
   @Column({ type: 'varchar' })
   status: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, transformer: new DecimalColumnTransformer() })
   total: number;
 
   @Column({nullable: true})

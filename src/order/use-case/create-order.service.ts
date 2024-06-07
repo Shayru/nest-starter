@@ -47,8 +47,7 @@ export class CreateOrderService{
 
             const orderProduct = new OrderProduct(dto)
 
-            const newTotal = parseFloat(order.total) + parseFloat((product.price * quantity).toFixed(2));
-            order.total = newTotal.toFixed(2);
+            order.total = orderProduct.product.price * orderProduct.quantity;
             order.products = [orderProduct];
         }  else{
             console.log('found')
@@ -65,7 +64,7 @@ export class CreateOrderService{
                     console.log(quantity);
                     product.incrementQuantity(quantity)
                     found = true;
-                    foundOrder.total = foundOrder.total - product.product.price * product.quantity
+                    foundOrder.total = foundOrder.total + (product.product.price * quantity);
                 }
             })
             if(!found){
@@ -81,8 +80,7 @@ export class CreateOrderService{
 
 
                 const orderProduct = new OrderProduct(dto)
-                const newTotal = parseFloat(order.total) + parseFloat((product.price * quantity).toFixed(2));
-                order.total = newTotal.toFixed(2);
+                order.total = foundOrder.total + (product.price * quantity);
                 console.log(order.total);
                 order.products.push(orderProduct);
             }

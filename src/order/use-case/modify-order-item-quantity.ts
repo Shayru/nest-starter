@@ -44,12 +44,17 @@ export class ModifyOrderItemQuantityService {
 
       console.log('isChangeDelete ' + found.isChangeDelete(data))
       if(found.isChangeDelete(data)){
-        foundOrder.total = foundOrder.total - orderProduct.product.price * orderProduct.quantity
+        foundOrder.total = foundOrder.total - (orderProduct.product.price * orderProduct.quantity);
         await this.orderProductRepository.remove(found);
         foundOrder.products = foundOrder.products.filter(product => product.product.id !== productId);
         return await this.repository.save(foundOrder)
       } else {
         found.changeQuantity(data)
+        if(data.increase){
+          foundOrder.total = foundOrder.total + (orderProduct.product.price * data.quantity);
+        } else {
+          foundOrder.total = foundOrder.total - (orderProduct.product.price * data.quantity);
+        }
         return await this.repository.save(foundOrder);
       }
   }
