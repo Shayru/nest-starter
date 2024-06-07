@@ -5,6 +5,7 @@ import { User } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 import { PasswordHasherServiceInterface } from '../utils/password-hasher.service.interface';
 import { PasswordHasherService } from '../utils/password-hasher.service';
+import { Order } from '../../order/entity/order.entity';
 
 @Injectable()
 export class CreateUserService{
@@ -17,13 +18,16 @@ export class CreateUserService{
   }
 
   async createUser(data: UserCreateDTO) {
-    const userToPersist = {
-      ...data,
-      password: await this.passwordHasherService.hashPassword(data.password),
-    };
+    const userExist = await this.userRepository.findOneBy({ username: data.username });
+    if(userExist) {
+      throw new Error('User already exist');
+    }
+    
+    data.password = await this.passwordHasherService.hashPassword(data.password);
+    const user = new User(data);
 
     try{
-     return this.userRepository.save(userToPersist);
+     return this.userRepository.save(user);
     } catch (error) {
       throw new Error('Error while creating user');
     }

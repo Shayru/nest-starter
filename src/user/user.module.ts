@@ -10,8 +10,8 @@ import { PasswordHasherServiceInterface } from './utils/password-hasher.service.
 import { UpdateUserPasswordService } from './use-case/update-user-password.service';
 import { UpdateUserService } from './use-case/update-user.service';
 import { GetUserByIdService } from './use-case/get-user-by-id.service';
-import { getAllUserByBirthCityService } from './use-case/get-all-user-by-birth-city.service';
 import { GetCurrentUserService } from './use-case/get-current-user.service';
+import { makeAdminService } from './use-case/make-admin.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -20,12 +20,12 @@ import { GetCurrentUserService } from './use-case/get-current-user.service';
    CreateUserService,
     GetAllUsersService,
     GetUserByIdService,
-    getAllUserByBirthCityService,
     UpdateUserPasswordService,
     UpdateUserService,
     DeleteUserService,
     GetCurrentUserService,
     PasswordHasherService,
+    makeAdminService
     // {
     //     provide: CreateUserService,
     //     useFactory: (PasswordHasherService: PasswordHasherServiceInterface) => {
@@ -34,5 +34,9 @@ import { GetCurrentUserService } from './use-case/get-current-user.service';
     //     inject: [PasswordHasherService],
     // },
   ],
+  exports: [
+    TypeOrmModule.forFeature([User]),
+    GetCurrentUserService
+  ]
 })
 export class UserModule {}

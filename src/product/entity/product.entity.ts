@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ProductCreateDto } from "../dto/product-create.dto";
+import { OrderProduct } from "src/order/entity/order-product.entity";
 
 @Entity()
 export class Product {
@@ -19,7 +20,7 @@ export class Product {
     @Column({ type: 'varchar' })
     title: string;
   
-    @Column({ type: 'int' })
+    @Column('decimal', { precision: 10, scale: 2 })
     price: number;
   
     @Column({ type: 'varchar' })
@@ -30,4 +31,7 @@ export class Product {
   
     @Column({ type: 'varchar', nullable: true })
     color: string;
+
+    @OneToMany(() => OrderProduct, orderProduct => orderProduct.product)
+    orderProduct: OrderProduct[];
 }

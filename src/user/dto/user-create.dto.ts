@@ -9,8 +9,4 @@ export class UserCreateDTO {
   username: string;
   @IsString()
   password: string;
-  @IsString()
-  birthcity: string;
-  @IsNumber()
-  age: number;
 }

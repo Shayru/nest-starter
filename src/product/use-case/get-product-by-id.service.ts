@@ -9,7 +9,7 @@ export class GetProductByIdService {
   ) {
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<Product>{
     return await this.repository.findOneBy({ id });
   }
 }

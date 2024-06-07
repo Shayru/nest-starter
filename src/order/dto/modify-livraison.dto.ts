@@ -4,5 +4,5 @@ export class ModifyLivraisonDTO {
     @IsString()
     shippingAddress: string
     @IsString()
-    shippingMethod: string
+    invoiceAddress: string
 }

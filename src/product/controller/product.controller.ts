@@ -12,8 +12,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateProductService } from '../use-case/create-product.service';
 import { GetAllProductsService } from '../use-case/get-all-products.service';
 import { DeleteProductService } from '../use-case/delete-product.service';
-import { GetProductByIdService } from '../use-case/get-product-by-id.service';
 import { ProductCreateDto } from '../dto/product-create.dto';
+import { GetProductByIdService } from '../use-case/get-product-by-id.service';
   
   @Controller('products')
   export class ProductController {

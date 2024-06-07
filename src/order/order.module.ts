@@ -11,11 +11,14 @@ import { GetAllOrdersItemsService } from './use-case/get-all-orders-items.servic
 import { DeleteOrderService } from './use-case/delete-order.service';
 import { OrderProduct } from './entity/order-product.entity';
 import { UserModule } from 'src/user/user.module';
-import { GetCurrentUserService } from 'src/user/use-case/get-current-user.service';
-import { User } from 'src/user/entity/user.entity';
+import { ProductModule } from 'src/product/product.module';
+import { GetCurrentUserOrderService } from './use-case/get-current-user-order.service';
+import { DeleteOrderItemProductService } from './use-case/delete-order-item-product';
+import { ModifyOrderItemQuantityService } from './use-case/modify-order-item-quantity';
+import { GetOrderService } from './use-case/get-order.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderProduct]),  TypeOrmModule.forFeature([User]), UserModule],
+  imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderProduct]), UserModule, ProductModule],
   
   controllers: [OrderController],
   providers: [
@@ -26,7 +29,10 @@ import { User } from 'src/user/entity/user.entity';
     ModifyShippingOrderService,
     ModifyInvoiceOrderService,
     DeleteOrderService,
-    GetCurrentUserService
+    GetCurrentUserOrderService,
+    DeleteOrderItemProductService,
+    ModifyOrderItemQuantityService,
+    GetOrderService
     // {
     //     provide: CreateUserService,
     //     useFactory: (PasswordHasherService: PasswordHasherServiceInterface) => {

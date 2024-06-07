@@ -17,16 +17,17 @@ export class LoginService {
   }
 
   
-  async login(data: LoginDto): Promise<{ access_token: string }>  {
+  async login(data: LoginDto): Promise<{ access_token: string, role: string }>  {
     const user = await this.userRepository.findOneBy({"username": data.username});
     if (!await this.passwordHasherService.compare(data.password, user.password)) {
         throw new UnauthorizedException();
       }
-      const payload = { sub: user.id, username: user.username };
+      const payload = { id: user.id, username: user.username };
       return {
         access_token: await this.jwtService.signAsync(payload, {
             secret: jwtConstants.secret
-        }),
+        },), 
+        role: user.role
       };
   }
 }

@@ -20,25 +20,45 @@ import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
 import { GetAllOrdersItemsService } from '../use-case/get-all-orders-items.service';
 import { DeleteOrderService } from '../use-case/delete-order.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { CurrentUser } from 'src/user/decorator/user.decorator';
+import { GetCurrentUserOrderService } from '../use-case/get-current-user-order.service';
+import { DeleteOrderItemProductService } from '../use-case/delete-order-item-product';
+import { ModifyOrderItemQuantityService } from '../use-case/modify-order-item-quantity';
+import { ModifyOrderProductQuantityDTO } from '../dto/modify-order-product-quantity.dto';
+import { GetOrderService } from '../use-case/get-order.service';
   
   @Controller('orders')
   export class OrderController {
     constructor(
       private readonly createOrderService: CreateOrderService,
       private readonly getAllOrdersService: GetAllOrdersService,
+      private readonly getOrderService: GetOrderService,
       private readonly getAllOrdersItemsService: GetAllOrdersItemsService,
+      private readonly getCurrentUserOrderService: GetCurrentUserOrderService,
       private readonly payOrderService: PayOrderService,
       private readonly modifyShippingOrderService: ModifyShippingOrderService,
       private readonly modifyInvoiceOrderService: ModifyInvoiceOrderService,
-      private readonly deleteOrderService: DeleteOrderService
+      private readonly deleteOrderService: DeleteOrderService,
+      private readonly deleteOrderItemProductService: DeleteOrderItemProductService,
+      private readonly modifyOrderItemQuantity: ModifyOrderItemQuantityService
   
   ) {}
   
     @UseGuards(AuthGuard)
     @Post()
-    createOrder(@Body() data: OrderCreateDTO) {
-      console.log(data);
-      return this.createOrderService.create(data);
+    createOrder(
+      @Body() data: OrderCreateDTO,  
+      @CurrentUser() currentUser: any
+    ) {
+      return this.createOrderService.create(data, currentUser);
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('/current')
+    getCurrentUserOrder(
+      @CurrentUser() currentUser: any
+    ) {
+      return this.getCurrentUserOrderService.get(currentUser);
     }
 
     @UseGuards(AuthGuard)
@@ -72,10 +92,18 @@ import { AuthGuard } from 'src/auth/auth.guard';
     async getAllOrders() {
       const orders = await this.getAllOrdersService.getAll();
       orders.forEach(order => {
-        console.log(order);
-        console.log(order.customer);
+        // console.log(order);
+        // console.log(order.customer);
       })
       return orders;
+    }
+
+    @UseGuards(AuthGuard)
+    @Get(':id/')
+    async getOrder(
+      @Param('id', ParseIntPipe) id: number,
+    ) {
+      return this.getOrderService.get(id);
     }
 
     @UseGuards(AuthGuard)
@@ -90,6 +118,26 @@ import { AuthGuard } from 'src/auth/auth.guard';
     @Get('/items')
     getAllOrdersItems() {
       return this.getAllOrdersItemsService.getAll();
+    }
+
+    @UseGuards(AuthGuard)
+    @Delete(':id/products/:itemId')
+    removeItem(
+      @Param('id', ParseIntPipe) id: number,
+      @Param('itemId', ParseIntPipe) itemId: number,
+
+    ) {
+      return this.deleteOrderItemProductService.delete(id, itemId);
+    }
+
+    @UseGuards(AuthGuard)
+    @Put(':id/products/:itemId/')
+    modifyItemQuantity(
+      @Param('id', ParseIntPipe) id: number,
+      @Param('itemId', ParseIntPipe) itemId: number,
+      @Body() data: ModifyOrderProductQuantityDTO,
+    ) {
+      return this.modifyOrderItemQuantity.modify(id,itemId, data);
     }
   
   }

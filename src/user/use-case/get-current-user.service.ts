@@ -11,7 +11,8 @@ export class GetCurrentUserService {
   ) {
   }
 
-  async get() {
-    return await this.repository.findOneBy({ "id": 1 });
+  async get(userId: number) {
+
+    return await this.repository.findOneBy({ "id": userId });
   }
 }

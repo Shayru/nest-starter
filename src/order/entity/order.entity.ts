@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { OrderCreateDTO } from '../dto/order-create.dto';
 import { ModifyLivraisonDTO } from '../dto/modify-livraison.dto';
 import { ModifyInvoiceDTO } from '../dto/modify-invoice.dto';
@@ -35,33 +35,27 @@ export class Order {
 
   @Column()
   updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.id, {cascade: true})
-  customer: User;
   
   @Column({nullable: true})
   paidAt: Date;
 
-  @OneToMany(() => OrderProduct, (order) => order.id, {nullable: true,  cascade: true})
+  @ManyToOne(() => User)
+  customer: User;
+
+  @OneToMany(() => OrderProduct, (OrderProduct) => OrderProduct.order, { cascade: true })
   products: OrderProduct[];
 
   @Column({ type: 'varchar' })
   status: string;
 
-  @Column({ type: 'int' })
+  @Column('decimal', { precision: 10, scale: 2 })
   total: number;
 
   @Column({nullable: true})
   shippingAddress: string;
 
   @Column({nullable: true})
-  shippingMethod: string;
-
-  @Column({nullable: true})
   invoiceAddress: string;
-
-  @Column({nullable: true})
-  shippingMethodSetAt: Date;
 
   @Column({nullable: true})
   invoiceAddressSetAt: Date;
@@ -77,14 +71,10 @@ export class Order {
     if(this.status != Order.OrderType.Created && this.status != Order.OrderType.Paid){
         throw new Error("Le commande n'est pas au bon status")
     }
-    if(this.invoiceAddress == null){
-        this.invoiceAddress = data.shippingAddress
-        this.invoiceAddressSetAt = new Date()
-    }
+    this.invoiceAddress = data.invoiceAddress
     this.shippingAddress = data.shippingAddress
-    this.shippingMethod = data.shippingMethod
-    this.shippingMethodSetAt = new Date()
     this.updatedAt = new Date()
+    this.invoiceAddressSetAt = new Date()
   }
 
   setInvoiceAdress(data: ModifyInvoiceDTO){
@@ -124,42 +114,43 @@ export class Order {
   // }
 
 
-  createOrderProducts(data: OrderCreateDTO) {
-    this.products = []
+//   createOrderProducts(data: Product[]) {
+//     this.products = []
 
-    data.products.map(product => {
-        console.log("Checking : " + product)
-        const existingOrderProduct = this.getOrderProductWithProduct(product);
-        if (existingOrderProduct) {
-          console.log("ProductExist")
-          existingOrderProduct.incrementQuantity()
-        } else {
-          console.log("Product Doesn't Exist")
-            const orderProduct = new OrderProductCreateDTO;
-            orderProduct.order = this;
-            orderProduct.product = product;
-            console.log(orderProduct);
+//     data.map(product => {
+//         // console.log("Checking : " + product)
+//         const existingOrderProduct = this.getOrderProductWithProduct(product);
+//         if (existingOrderProduct) {
+//           console.log("ProductExist")
+//           existingOrderProduct.incrementQuantity()
+//         } else {
+//           console.log("Product Doesn't Exist")
+//             const orderProduct = new OrderProductCreateDTO;
+//             orderProduct.order = this;
+//             orderProduct.product = product;
+//             console.log(orderProduct);
 
-            const newProduct = (new OrderProduct(orderProduct));
-            console.log("created OrderProduct")
-            // console.log(newProduct);
-            this.products.push(newProduct)
-        }
-    });
-}
+//             const newProduct = (new OrderProduct(orderProduct));
+//             // console.log("created OrderProduct")
+//             console.log(newProduct);
+//             this.products.push(newProduct)
+//         }
+//     });
+// }
 
-private getOrderProductWithProduct(product: Product): OrderProduct {
-    this.products.forEach((p) => {
-      if(p.product === product ){
-          console.log("is Found")
-      } else{
-        console.log("not found")
-      }
-    })
-    return this.products.find((itemProduct) => {
-        // console.log(itemProduct)
-        return itemProduct.product === product;
-    });
-}
+// private getOrderProductWithProduct(product: Product): OrderProduct {
+//     this.products.forEach((p) => {
+//       // if(p.product === product ){
+//       //     console.log("is Found")
+//       // } else{
+//       //   console.log("not found")
+//       // }
+//     })
+//     return this.products.find((itemProduct) => {
+//         // console.log(itemProduct)
+//         // return itemProduct.product === product;
+//         return false;
+//     });
+// }
 
 }
