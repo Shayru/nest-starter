@@ -15,6 +15,6 @@ export class PayOrderService{
         const order = await this.repository.findOneBy({ id });
         order.pay()
 
-        return this.repository.save(order);
+        return await this.repository.save(order);
     }
 }

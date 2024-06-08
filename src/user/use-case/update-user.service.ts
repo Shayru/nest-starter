@@ -6,14 +6,14 @@ import { UserUpdateDTO } from '../dto/user-update.dto';
 export class UpdateUserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {
   }
 
   async update(id: number, data: UserUpdateDTO) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id });
     const userUpdate = { ...user, ...data };
-    await this.userRepository.save(userUpdate);
+    await this.repository.save(userUpdate);
 
     return userUpdate;
   }

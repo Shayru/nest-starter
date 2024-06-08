@@ -10,11 +10,11 @@ export class GetAllUserOrdersService {
     private readonly repository: Repository<Order>,
   ) {}
 
-  async get(id: number) {
+  async get(userId: number) {
 
     return await this.repository.find({
       where: { 
-          customer: { id }
+          customer: { id: userId }
       },
       relations: ['products', 'products.product', 'customer'],
       })

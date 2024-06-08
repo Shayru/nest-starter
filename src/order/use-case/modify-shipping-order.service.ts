@@ -16,6 +16,6 @@ export class ModifyShippingOrderService{
         const order = await this.repository.findOneBy({ id });
         order.setShippingAdress(data)
 
-        return this.repository.save(order);
+        return await this.repository.save(order);
     }
 }

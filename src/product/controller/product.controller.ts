@@ -20,8 +20,8 @@ import { GetProductByIdService } from '../use-case/get-product-by-id.service';
     constructor(
       private readonly createProductService: CreateProductService,
       private readonly getAllProductsService: GetAllProductsService,
-      private readonly deleteProductService: DeleteProductService,
-      private readonly getProductByIdService: GetProductByIdService
+      private readonly getProductByIdService: GetProductByIdService,
+      private readonly deleteProductService: DeleteProductService
   
   ) {}
   

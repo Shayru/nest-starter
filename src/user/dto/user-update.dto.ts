@@ -5,8 +5,4 @@ export class UserUpdateDTO {
   firstname: string;
   @IsString()
   lastname: string;
-  @IsString()
-  birthcity: string;
-  @IsNumber()
-  age: number;
 }

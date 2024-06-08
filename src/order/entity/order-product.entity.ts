@@ -1,20 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import { Order } from "./order.entity";
 import { Product } from "src/product/entity/product.entity";
 import { int } from "aws-sdk/clients/datapipeline";
-import { OrderProductCreateDTO } from "../dto/order-product-create.dto";
 import { ModifyOrderProductQuantityDTO } from "../dto/modify-order-product-quantity.dto";
 
 @Entity()
 export class OrderProduct {
-    constructor(data: OrderProductCreateDTO){
-        if(data){
-            this.product = data.product;
-            if(data.quantity){
-                this.quantity = data.quantity
-            } else {
-                this.quantity = 1;
-            }
+    constructor(product: Product, quantity: number){
+        if(product) this.product = product;
+        if(quantity) {
+            this.quantity = quantity
+        } else {
+            quantity = 1
         }
     }
 
@@ -39,8 +36,6 @@ export class OrderProduct {
     }
     
     incrementQuantity(number?: int){
-        console.log(number);
-        console.log(this.quantity);
         if(number) {
             this.quantity = this.quantity + number
         } else {

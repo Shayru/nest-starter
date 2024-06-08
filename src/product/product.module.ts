@@ -15,8 +15,8 @@ import { GetProductsByIdService } from './use-case/get-products-by-id.service';
     CreateProductService,
     GetAllProductsService,
     GetProductByIdService,
-    DeleteProductService,
-    GetProductsByIdService
+    GetProductsByIdService,
+    DeleteProductService
   ],
   exports: [TypeOrmModule.forFeature([Product]),
   GetProductByIdService

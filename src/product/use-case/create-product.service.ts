@@ -11,6 +11,6 @@ export class CreateProductService{
 
     async create(createData: ProductCreateDto): Promise<Product> {
         const product = new Product(createData);
-        return this.repository.save(product);
+        return await this.repository.save(product);
     }
 }

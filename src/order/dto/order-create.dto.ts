@@ -1,5 +1,4 @@
-import { IsNumber, IsString, } from "class-validator";
-import { Product } from "src/product/entity/product.entity";
+import { IsNumber, } from "class-validator";
 
 export class OrderCreateDTO {
   @IsNumber()

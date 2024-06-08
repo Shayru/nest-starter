@@ -7,10 +7,10 @@ Injectable();
 export class GetAllUsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {}
 
   async getAllArticles() {
-    return await this.userRepository.find();
+    return await this.repository.find();
   }
 }

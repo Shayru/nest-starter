@@ -5,18 +5,17 @@ import { OrderController } from './controller/order.controller';
 import { CreateOrderService } from './use-case/create-order.service';
 import { GetAllOrdersService } from './use-case/get-all-orders.service';
 import { PayOrderService } from './use-case/pay-order-service';
-import { ModifyInvoiceOrderService } from './use-case/modify-invoice-order.service';
 import { ModifyShippingOrderService } from './use-case/modify-shipping-order.service';
 import { DeleteOrderService } from './use-case/delete-order.service';
 import { OrderProduct } from './entity/order-product.entity';
 import { UserModule } from 'src/user/user.module';
 import { ProductModule } from 'src/product/product.module';
-import { GetCurrentUserOrderService } from './use-case/get-current-user-order.service';
-import { DeleteOrderItemProductService } from './use-case/delete-order-item-product';
-import { ModifyOrderItemQuantityService } from './use-case/modify-order-item-quantity';
+import { DeleteOrderProductItemService } from './use-case/delete-order-productitem';
 import { GetOrderService } from './use-case/get-order.service';
-import { GetAllOrdersItemsService } from './use-case/get-all-orders-items.service copy';
 import { GetAllUserOrdersService } from './use-case/get-all-user-orders.service';
+import { GetAllOrdersProductsService } from './use-case/get-all-orders-products.service';
+import { ModifyOrderProductQuantityService } from './use-case/modify-order-product-quantity';
+import { GetUserCurrentOrderService } from './use-case/get-user-current-order.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order]), TypeOrmModule.forFeature([OrderProduct]), UserModule, ProductModule],
@@ -25,14 +24,13 @@ import { GetAllUserOrdersService } from './use-case/get-all-user-orders.service'
   providers: [
     CreateOrderService,
     GetAllOrdersService,
-    GetAllOrdersItemsService,
+    GetAllOrdersProductsService,
+    GetUserCurrentOrderService,
     PayOrderService,
     ModifyShippingOrderService,
-    ModifyInvoiceOrderService,
     DeleteOrderService,
-    GetCurrentUserOrderService,
-    DeleteOrderItemProductService,
-    ModifyOrderItemQuantityService,
+    DeleteOrderProductItemService,
+    ModifyOrderProductQuantityService,
     GetAllUserOrdersService,
     GetOrderService
     // {

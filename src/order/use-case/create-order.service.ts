@@ -2,93 +2,61 @@ import { Repository } from "typeorm";
 import { OrderCreateDTO } from "../dto/order-create.dto";
 import { Order } from "../entity/order.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GetCurrentUserService } from "src/user/use-case/get-current-user.service";
 import { GetProductByIdService } from "src/product/use-case/get-product-by-id.service";
 import { OrderProduct } from "../entity/order-product.entity";
-import { OrderProductCreateDTO } from "../dto/order-product-create.dto";
+import { GetUserByIdService } from "src/user/use-case/get-user-by-id.service";
 
 export class CreateOrderService{
     constructor(
         @InjectRepository(Order)
         private readonly repository: Repository<Order>,
-        private readonly getCurrentUserService: GetCurrentUserService,
+        private readonly getUserByIdService: GetUserByIdService,
         private readonly getProductByIdService: GetProductByIdService
     ){}
 
-    async create(createOrderData: OrderCreateDTO, currentUser: number): Promise<Order> {
-        console.log('startCreate');
-        const user = await this.getCurrentUserService.get(currentUser);
-        const id = createOrderData.product;
+    async create(createOrderData: OrderCreateDTO, userId: number): Promise<Order> {
+        const user = await this.getUserByIdService.get(userId);
+        const productId = createOrderData.product;
         const quantity = createOrderData.quantity;
-        console.log('quantity');
-        console.log(createOrderData.quantity);
         const foundOrder = await this.repository.findOne({
             where: { 
                 status: Order.OrderType.Created,
-                customer: { id: currentUser }
+                customer: { id: userId }
             },
             relations: ['products','products.product','customer']
         });
         let order;
         if(!foundOrder){
-            console.log('notFound')
             order = new Order(user);
             order = await this.repository.save(order)
 
-            const product = await this.getProductByIdService.getById(id);
+            const product = await this.getProductByIdService.getById(productId);
             if(!product){
                 throw new Error('Produit Nok');
             }
-            
-            const dto = new OrderProductCreateDTO();
-            dto.product = product
-            dto.quantity = quantity
 
-
-            const orderProduct = new OrderProduct(dto)
-
-            order.total = orderProduct.product.price * orderProduct.quantity;
-            order.products = [orderProduct];
+            order.products = [new OrderProduct(product,quantity)];
+            order.total = product.price * quantity;
         }  else{
-            console.log('found')
-            console.log(foundOrder)
-            console.log(foundOrder.products);
             order = foundOrder
             let found = false
-            foundOrder.products.forEach(product => {
-                console.log(product.product);
-                console.log(id);
-                console.log(quantity);
-                if(product.product.id == id){
-                    console.log('test');
-                    console.log(quantity);
-                    product.incrementQuantity(quantity)
+            foundOrder.products.forEach(orderProduct => {
+                if(orderProduct.product.id == productId){
+                    orderProduct.incrementQuantity(quantity)
                     found = true;
-                    foundOrder.total = foundOrder.total + (product.product.price * quantity);
+                    foundOrder.total = foundOrder.total + (orderProduct.product.price * quantity);
                 }
             })
             if(!found){
-                console.log('HEEEEEEEEEEEEEEEEEEEEERER')
-                const product = await this.getProductByIdService.getById(id);
+                const product = await this.getProductByIdService.getById(productId);
                 if(!product){
                     throw new Error('Produit Nok');
                 }
-                
-                const dto = new OrderProductCreateDTO();
-                dto.product = product
-                dto.quantity = quantity
 
-
-                const orderProduct = new OrderProduct(dto)
                 order.total = foundOrder.total + (product.price * quantity);
-                console.log(order.total);
-                order.products.push(orderProduct);
+                order.products.push(new OrderProduct(product, quantity));
             }
         }
-
-        console.log("finalOrder: ")
-        console.log(order);
-
         return await this.repository.save(order);
     }
 }

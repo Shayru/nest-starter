@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { CreateUserService } from '../use-case/create-user.service';
 import { UserCreateDTO } from '../dto/user-create.dto';
@@ -26,10 +25,10 @@ export class UserController {
     private readonly createUserService: CreateUserService,
     private readonly getAllUserService: GetAllUsersService,
     private readonly getUserByIdService: GetUserByIdService,
-    private readonly deleteUserService: DeleteUserService,
     private readonly updateUserService: UpdateUserService,
     private readonly makeAdminService: makeAdminService,
     private readonly updateUserPasswordService: UpdateUserPasswordService,
+    private readonly deleteUserService: DeleteUserService,
 
 ) {}
 

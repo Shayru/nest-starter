@@ -5,14 +5,14 @@ import { User } from '../entity/user.entity';
 export class makeAdminService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {
   }
 
   async makeAdmin(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id });
     user.makeAdmin()
 
-    return await this.userRepository.save(user);
+    return await this.repository.save(user);
   }
 }
